@@ -23,13 +23,32 @@ class Item:
         return f"{self.sku} | {self.name} | Qty: {self.quantity} | Loc: {self.location} | ReorderPoint: {self.reorder_point}"
 
 
+class Inventory:
+    def __init__(self):
+        self.items = {}
+
+    def add_item(self, item):
+        self.items[item.sku] = item
+
+    def get_item(self,sku):
+        return self.items.get(sku)
+
+    def low_stock_report(self):
+        print("\nLow Stock Report")
+        for item in self.items.values():
+            if item.is_low_stock():
+                print(item)
+
+
 # Test it
-item = Item("SKU-1001", "Insulin pens", 40, "A-01-03", 50)
-print(item)
-print(f"Low stock? {item.is_low_stock()}")
+warehouse = Inventory()
 
-item.receive(20)
-print(item)
+warehouse.add_item(Item("SKU-1001", "Insulin Pens", 40, "A-01-03", 50))
+warehouse.add_item(Item("SKU-1002", "Syringes", 500, "B-02-01", 100))
+warehouse.add_item(Item("SKU-1003", "Alcohol Swabs", 20, "C-04-02", 75))
 
-item.ship(100)
-print(item)
+pens = warehouse.get_item("SKU-1001")
+pens.receive(30)
+print(pens)
+
+warehouse.low_stock_report()
